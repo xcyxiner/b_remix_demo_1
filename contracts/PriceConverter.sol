@@ -5,6 +5,8 @@ import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.so
 
 library PriceConverter {
     function getPrice() internal view returns (uint256) {
+        // ETH / USD 
+        // sepolia
         AggregatorV3Interface priceFeed = AggregatorV3Interface(
             0x694AA1769357215DE4FAC081bf1f309aDC325306
         );
@@ -13,6 +15,8 @@ library PriceConverter {
     }
 
     function getVersion() internal view returns (uint256) {
+        // ETH / USD 
+        // sepolia
         AggregatorV3Interface priceFeed = AggregatorV3Interface(
             0x694AA1769357215DE4FAC081bf1f309aDC325306
         );
