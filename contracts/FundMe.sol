@@ -17,6 +17,12 @@ contract FundMe {
 
     uint256 public minimumUsd = 50 * 1e18;
 
+    address public owner;
+
+    constructor(){
+        owner=msg.sender;
+    }
+
     function fund() public payable {
         require(
             msg.value.getConversionRate() >= minimumUsd,
@@ -24,6 +30,26 @@ contract FundMe {
         );
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] = msg.value;
+    }
+
+    function withdraw() public onlyOwner {
+        // require(msg.sender == owner,"Sender is not owner!");
+        /* starting index,ending index,step amount*/
+        for(uint256 funderIndex=0;funderIndex< funders.length;funderIndex++){
+            //code
+            address funder=funders[funderIndex];
+            addressToAmountFunded[funder]=0;
+        }
+        //reset the array
+        funders=new address[](0);
+        // //transfer 2300gas throw err
+        // payable(msg.sender).transfer(address(this).balance);
+        // //send 2300gas bool
+        // bool sendSuccess=payable(msg.sender).send(address(this).balance);
+        // require(sendSuccess,"Send failed");
+        //call allgas bool
+       (bool callSuccess,)= payable(msg.sender).call{value:address(this).balance}("");
+       require(callSuccess,"call failed");
     }
 
     function getVersion() public view returns (uint256) {
@@ -43,6 +69,11 @@ contract FundMe {
         );
         (, int256 price, , , ) = priceFeed.latestRoundData();
         return uint256(price * 1e10);
+    }
+
+    modifier onlyOwner{
+       require(msg.sender == owner,"Sender is not owner!");
+       _;
     }
 
     // function withdraw(){}
